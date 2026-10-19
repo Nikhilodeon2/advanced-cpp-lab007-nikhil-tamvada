@@ -1,31 +1,30 @@
 # Recursive Algorithms Laboratory Notes
 
-Students should implement each required function recursively, without using loops in the recursive versions.
+The recursive implementations use no loops. Their base and recursive cases are
+identified in the source. The comparison implementations use iteration where
+appropriate.
 
-## Required Algorithms
+## Recursive and Iterative Comparison
 
-1. `factorial(n)`
-2. `fibonacci(n)`
-3. `binarySearch(array, target)`
-4. `arraySum(array)`
-5. `reverseArray(array)`
+| Algorithm | Recursive time / extra space | Iterative time / extra space | Calls and recursion depth |
+| --- | --- | --- | --- |
+| Factorial | O(n) / O(n) | O(n) / O(1) | The recursive version makes O(n) calls with depth O(n). |
+| Fibonacci | O(n) / O(n) | O(n) / O(1) | Memoization limits the recursive version to O(n) calls and O(n) depth; the iterative version stores only two terms. |
+| Binary search | O(log n) / O(log n) | O(log n) / O(1) | The recursive version makes O(log n) calls with depth O(log n); each step halves the search range. |
+| Array sum | O(n) / O(n) | O(n) / O(1) | Both process n elements; the recursive version makes O(n) calls with depth O(n). |
+| Array reversal | O(n) / O(n) | O(n) / O(1) | Both perform O(n) swaps; the recursive version has O(n) call depth. |
 
-## Expected Design
+The recursive forms express naturally self-similar definitions and can be easy
+to follow when each smaller subproblem is apparent. They also use call-stack
+space, add function-call overhead, and can overflow the stack for large inputs
+(especially a long array sum or reversal). Iterative forms generally use
+constant auxiliary space, avoid stack-overflow risk, and are often preferable
+for production code where large input sizes are possible. Binary search is a
+notable case where recursion depth is logarithmic rather than linear.
 
-- Identify and comment on the base case for each implementation.
-- Identify and comment on the recursive case for each implementation.
-- Use clear parameter names and return values.
-- Include validation for invalid or unsupported inputs.
-- For comparison, also implement iterative versions.
-
-## Comparison Requirement
-
-For each algorithm where an iterative solution is reasonable, provide a written comparison covering:
-
-- time complexity;
-- space complexity;
-- number and depth of recursive calls;
-- readability and maintainability;
-- advantages and disadvantages of recursion;
-- stack overflow risk;
-- Big-Oh analysis for both recursive and iterative forms.
+Fibonacci is memoized in its recursive form to avoid the exponential repeated
+work of the naive recurrence while retaining the recursive relationship. Its
+iterative counterpart is simpler in space and also runs in linear time. The
+integer-returning factorial and Fibonacci functions reject negative inputs and
+throw `std::overflow_error` when the result would exceed `int`; array sums also
+report an out-of-range result rather than overflowing.

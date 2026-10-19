@@ -3,6 +3,7 @@
 
 #include "project/recursive_algorithms.h"
 
+#include <limits>
 #include <stdexcept>
 #include <vector>
 
@@ -12,6 +13,7 @@ TEST_CASE("factorial recursive and iterative: normal values") {
     REQUIRE(factorial(5) == 120);
     REQUIRE(factorial(7) == 5040);
     REQUIRE(factorial(10) == 3628800);
+    REQUIRE(factorial(12) == 479001600);
 
     REQUIRE(factorialIterative(0) == 1);
     REQUIRE(factorialIterative(1) == 1);
@@ -23,6 +25,8 @@ TEST_CASE("factorial recursive and iterative: normal values") {
 TEST_CASE("factorial recursive and iterative: invalid input") {
     REQUIRE_THROWS_AS(factorial(-1), std::logic_error);
     REQUIRE_THROWS_AS(factorialIterative(-1), std::logic_error);
+    REQUIRE_THROWS_AS(factorial(13), std::overflow_error);
+    REQUIRE_THROWS_AS(factorialIterative(13), std::overflow_error);
 }
 
 TEST_CASE("factorial recursive and iterative: equivalence across representative inputs") {
@@ -39,6 +43,7 @@ TEST_CASE("fibonacci recursive and iterative: base and normal cases") {
     REQUIRE(fibonacci(10) == 55);
     REQUIRE(fibonacci(20) == 6765);
     REQUIRE(fibonacci(25) == 75025);
+    REQUIRE(fibonacci(46) == 1836311903);
 
     REQUIRE(fibonacciIterative(0) == 0);
     REQUIRE(fibonacciIterative(1) == 1);
@@ -47,11 +52,14 @@ TEST_CASE("fibonacci recursive and iterative: base and normal cases") {
     REQUIRE(fibonacciIterative(10) == 55);
     REQUIRE(fibonacciIterative(20) == 6765);
     REQUIRE(fibonacciIterative(25) == 75025);
+    REQUIRE(fibonacciIterative(46) == 1836311903);
 }
 
 TEST_CASE("fibonacci recursive and iterative: invalid input") {
     REQUIRE_THROWS_AS(fibonacci(-1), std::logic_error);
     REQUIRE_THROWS_AS(fibonacciIterative(-1), std::logic_error);
+    REQUIRE_THROWS_AS(fibonacci(47), std::overflow_error);
+    REQUIRE_THROWS_AS(fibonacciIterative(47), std::overflow_error);
 }
 
 TEST_CASE("fibonacci recursive and iterative: equivalence across representative inputs") {
@@ -136,6 +144,23 @@ TEST_CASE("arraySum recursive and iterative: equivalence on larger inputs") {
     REQUIRE(arraySum(values) == arraySumIterative(values));
 }
 
+TEST_CASE("arraySum recursive and iterative: report results outside int range") {
+    const std::vector<int> tooLarge = {std::numeric_limits<int>::max(), 1};
+    const std::vector<int> tooSmall = {std::numeric_limits<int>::min(), -1};
+
+    REQUIRE_THROWS_AS(arraySum(tooLarge), std::overflow_error);
+    REQUIRE_THROWS_AS(arraySumIterative(tooLarge), std::overflow_error);
+    REQUIRE_THROWS_AS(arraySum(tooSmall), std::overflow_error);
+    REQUIRE_THROWS_AS(arraySumIterative(tooSmall), std::overflow_error);
+}
+
+TEST_CASE("arraySum recursive and iterative: cancellation within int range") {
+    const std::vector<int> values = {-10, std::numeric_limits<int>::max(), 10};
+
+    REQUIRE(arraySum(values) == std::numeric_limits<int>::max());
+    REQUIRE(arraySumIterative(values) == std::numeric_limits<int>::max());
+}
+
 TEST_CASE("reverseArray recursive and iterative: in-place reversal") {
     std::vector<int> original = {1, 2, 3, 4, 5};
     reverseArray(original);
@@ -152,6 +177,14 @@ TEST_CASE("reverseArray recursive and iterative: in-place reversal") {
     std::vector<int> single = {42};
     reverseArray(single);
     REQUIRE(single == std::vector<int>({42}));
+
+    std::vector<int> iterativeEmpty;
+    reverseArrayIterative(iterativeEmpty);
+    REQUIRE(iterativeEmpty.empty());
+
+    std::vector<int> iterativeSingle = {42};
+    reverseArrayIterative(iterativeSingle);
+    REQUIRE(iterativeSingle == std::vector<int>({42}));
 
     std::vector<int> iterativeValues = {10, 20, 30, 40};
     reverseArrayIterative(iterativeValues);
