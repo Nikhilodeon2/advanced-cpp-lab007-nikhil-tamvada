@@ -6,6 +6,17 @@ CS 20 — Advanced Programming with C++
 ## Objective
 This laboratory focuses on writing recursive solutions to common algorithmic problems. Students must understand when recursion is appropriate, how to define base cases and recursive cases, and how to compare recursive design with iterative approaches.
 
+## Running the Examples
+
+Build and run the recursive and iterative demonstrations with:
+
+```sh
+make run
+```
+
+The executable is built as `build/main`. To run the unit tests instead, use
+`make test`.
+
 ## Required Algorithms
 
 Students must implement the following functions in C++:
